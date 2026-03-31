@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Streak Cracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0205;
+  --bg2: #100308;
+  --sidebar: #0f0205;
+  --red: #cc0000;
+  --red2: #ee2222;
+  --red3: #ff4444;
+  --gold: #f5a623;
+  --gold2: #ffd700;
+  --teal: #00e5cc;
+  --purple: #8b2fc9;
+  --purple2: #c084fc;
+  --orange: #ff6a00;
+  --pink: #ff4488;
+  --card: rgba(28,5,5,0.92);
+  --border: rgba(200,0,0,0.28);
+  --text: #f0dfc8;
+  --text2: #9a7a6a;
+  --dim: rgba(255,255,255,0.04);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+}
+
+/* ── AMBIENT BG ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 50%, rgba(180,0,0,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 85% 20%, rgba(100,0,0,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 50% 90%, rgba(180,0,0,0.04) 0%, transparent 60%);
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0;
+  z-index: 200;
+}
+
+.logo-block {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+
+.logo-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, #cc0000, #6b0000);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 0 16px rgba(204,0,0,0.5);
+  flex-shrink: 0;
+}
+
+.logo-text { line-height: 1.1; }
+.logo-text h2 {
+  font-family: 'Creepster', cursive;
+  font-size: 1rem; color: var(--red2);
+  text-shadow: 0 0 12px rgba(204,0,0,0.6);
+}
+.logo-text span { font-size: 0.65rem; color: var(--text2); letter-spacing: 1px; }
+
+.clock-block {
+  margin: 12px 12px 8px;
+  background: linear-gradient(135deg, rgba(204,0,0,0.18), rgba(100,0,0,0.12));
+  border: 1px solid rgba(204,0,0,0.25);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.clock-date { font-size: 0.65rem; font-family: 'Share Tech Mono', monospace; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; }
+.clock-time { font-family: 'Share Tech Mono', monospace; font-size: 1.3rem; color: var(--text); margin-top: 2px; letter-spacing: 2px; }
+
+nav { flex: 1; overflow-y: auto; padding: 6px 0; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
+  font-size: 0.88rem; font-weight: 600; letter-spacing: 0.3px;
+  color: var(--text2);
+  border-left: 3px solid transparent;
+  transition: all 0.18s;
+  position: relative;
+}
+.nav-item:hover { color: var(--text); background: rgba(204,0,0,0.07); }
+.nav-item.active { color: var(--red2); border-left-color: var(--red2); background: rgba(204,0,0,0.1); }
+.nav-icon { font-size: 1rem; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: var(--red); color: #fff;
+  font-size: 0.6rem; padding: 1px 5px; border-radius: 8px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: 220px;
+  flex: 1;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+  position: relative; z-index: 1;
+}
+
+/* ── HERO HEADER ── */
+.hero {
+  text-align: center;
+  padding: 24px 24px 16px;
+  position: relative;
+}
+
+.hero-title {
+  font-family: 'Creepster', cursive;
+  font-size: 2.2rem;
+  color: var(--red2);
+  text-shadow: 0 0 30px rgba(204,0,0,0.7), 0 0 60px rgba(204,0,0,0.3);
+  letter-spacing: 2px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+}
+
+.hero-deco { font-size: 1.6rem; animation: spinSlow 4s linear infinite; }
+@keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.hero-sub { color: var(--text2); font-size: 0.82rem; margin-top: 4px; letter-spacing: 1px; }
+
+/* RANK BAR */
+.rank-bar {
+  margin: 12px 24px;
+  background: rgba(20,5,5,0.9);
+  border: 1px solid rgba(204,0,0,0.22);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+
+.rank-avatar {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: linear-gradient(135deg, #cc0000, #ff6600);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 0 20px rgba(204,0,0,0.4);
+  flex-shrink: 0;
+  position: relative;
+}
+.rank-lv {
+  position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+  background: var(--red);
+  font-size: 0.55rem; font-weight: 700; color: white;
+  padding: 1px 5px; border-radius: 6px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.rank-info { flex: 1; }
+.rank-name { font-family: 'Creepster', cursive; font-size: 1.2rem; color: var(--gold); }
+.rank-xp-bar { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+.rank-xp-fill {
+  height: 100%; background: linear-gradient(90deg, var(--red), var(--gold));
+  border-radius: 3px; width: 10%;
+  transition: width 0.6s ease;
+  box-shadow: 0 0 8px rgba(245,166,35,0.6);
+}
+.rank-xp-label { font-size: 0.65rem; color: var(--text2); margin-top: 4px; font-family: 'Share Tech Mono', monospace; }
+
+.stat-pills { display: flex; gap: 8px; flex-shrink: 0; }
+.stat-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 60px; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+  padding: 8px 4px;
+}
+.stat-pill .sp-icon { font-size: 1.1rem; }
+.stat-pill .sp-val { font-family: 'Creepster', cursive; font-size: 1.1rem; line-height: 1; }
+.stat-pill .sp-label { font-size: 0.55rem; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+.pill-xp { border-color: rgba(245,166,35,0.3); }
+.pill-xp .sp-val { color: var(--gold); }
+.pill-star { border-color: rgba(255,200,0,0.3); }
+.pill-star .sp-val { color: var(--gold2); }
+.pill-streak { border-color: rgba(255,80,0,0.3); }
+.pill-streak .sp-val { color: #ff8844; }
+.pill-level { border-color: rgba(200,132,252,0.3); }
+.pill-level .sp-val { color: var(--purple2); }
+
+/* ALERT BAR */
+.alert-bar {
+  margin: 0 24px 8px;
+  background: rgba(204,0,0,0.08);
+  border: 1px solid rgba(204,0,0,0.2);
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 0.82rem;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.alert-bar:hover { background: rgba(204,0,0,0.14); }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red2); animation: blink 1.2s ease-in-out infinite; flex-shrink: 0; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── CONTENT AREA ── */
+.content { padding: 0 24px 24px; flex: 1; }
+
+/* VIEWS */
+.view { display: none; animation: fadeIn 0.35s ease; }
+.view.active { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── LEVEL MAP ── */
+.map-section-title {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.map-title { font-family: 'Creepster', cursive; font-size: 1.2rem; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.map-hint { font-size: 0.72rem; color: var(--text2); }
+
+.level-map-container {
+  background: rgba(10,2,2,0.7);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px 20px;
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+}
+
+/* SVG path layer */
+.map-svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* Nodes */
+.nodes-layer {
+  position: absolute; inset: 0;
+}
+
+.lv-node {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.lv-badge {
+  font-size: 0.5rem; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px; border-radius: 20px;
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+
+.badge-mission { background: rgba(204,0,0,0.8); color: #ffd0d0; }
+.badge-quest { background: rgba(100,20,200,0.8); color: #e8c0ff; }
+.badge-alert { background: rgba(200,60,130,0.8); color: #ffc0d8; }
+.badge-achievement { background: rgba(180,80,0,0.8); color: #ffddb0; }
+.badge-reward { background: rgba(0,100,200,0.8); color: #b0d8ff; }
+.badge-final { background: rgba(180,120,0,0.8); color: #fff0b0; }
+
+.lv-bubble {
+  width: 80px; height: 80px;
+  border-radius: 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  position: relative;
+  border: 2.5px solid;
+  transition: all 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+}
+
+.lv-bubble:hover { transform: scale(1.1) translateY(-3px); }
+
+.lv-bubble.completed {
+  background: linear-gradient(145deg, #1e0505, #2e0808);
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(245,166,35,0.35), inset 0 0 20px rgba(0,0,0,0.4);
+}
+.lv-bubble.active {
+  background: linear-gradient(145deg, #2a0505, #3e0808);
+  border-color: var(--red2);
+  box-shadow: 0 0 25px rgba(204,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.4);
+  animation: nodePulse 2.2s ease-in-out infinite;
+}
+.lv-bubble.locked {
+  background: linear-gradient(145deg, #0e0505, #160505);
+  border-color: #3a1010;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.lv-bubble.purple-node {
+  background: linear-gradient(145deg, #1a0535, #240850);
+  border-color: var(--purple2);
+  box-shadow: 0 0 20px rgba(140,40,200,0.4), inset 0 0 20px rgba(0,0,0,0.4);
+}
+.lv-bubble.pink-node {
+  background: linear-gradient(145deg, #2a0520, #3a0830);
+  border-color: #ff66aa;
+  box-shadow: 0 0 20px rgba(255,80,150,0.4), inset 0 0 20px rgba(0,0,0,0.4);
+}
+.lv-bubble.teal-node {
+  background: linear-gradient(145deg, #01201e, #023530);
+  border-color: var(--teal);
+  box-shadow: 0 0 20px rgba(0,200,180,0.35), inset 0 0 20px rgba(0,0,0,0.4);
+}
+
+@keyframes nodePulse {
+  0%,100%{ box-shadow: 0 0 20px rgba(204,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.4); }
+  50%{ box-shadow: 0 0 40px rgba(255,80,80,0.8), 0 0 70px rgba(204,0,0,0.3), inset 0 0 20px rgba(0,0,0,0.4); }
+}
+
+.lv-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem; color: rgba(255,255,255,0.5);
+  margin-top: 1px; letter-spacing: 1px;
+}
+
+.lv-label {
+  margin-top: 6px; font-size: 0.75rem; font-weight: 700;
+  text-align: center; color: var(--text2); max-width: 90px;
+  line-height: 1.2;
+}
+.lv-xp { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--gold); margin-top: 2px; }
+
+/* ── CARDS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+.card {
+  background: rgba(16,4,4,0.88);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(204,0,0,0.04), transparent 50%);
+  pointer-events: none; border-radius: inherit;
+}
+.card:hover { border-color: rgba(204,0,0,0.5); box-shadow: 0 0 20px rgba(204,0,0,0.08); transform: translateY(-1px); }
+.card-title { font-family: 'Creepster', cursive; font-size: 1.05rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+/* TASK ITEMS */
+.task-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 7px; cursor: pointer; transition: all 0.18s;
+}
+.task-item:hover { border-color: rgba(204,0,0,0.4); background: rgba(204,0,0,0.04); }
+.task-item.done { opacity: 0.6; }
+.task-item.done .t-name { text-decoration: line-through; }
+.task-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(204,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; transition: all 0.2s; }
+.task-item.done .task-check { background: var(--red); border-color: var(--red); }
+.t-name { flex: 1; font-size: 0.87rem; font-weight: 500; }
+.t-xp { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--gold); }
+
+/* NOTES */
+.tab-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.tab { padding: 4px 11px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); color: var(--text2); transition: all 0.18s; letter-spacing: 0.5px; }
+.tab:hover { border-color: var(--red); color: var(--text); }
+.tab.active { background: var(--red); color: white; border-color: var(--red); box-shadow: 0 0 10px rgba(204,0,0,0.4); }
+.note-ta {
+  width: 100%; min-height: 110px;
+  background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 10px 12px;
+  color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 0.88rem;
+  resize: vertical; outline: none; transition: border-color 0.2s;
+}
+.note-ta:focus { border-color: var(--red); box-shadow: 0 0 10px rgba(204,0,0,0.15); }
+
+/* BTNS */
+.btn { padding: 8px 18px; border-radius: 7px; font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; border: none; transition: all 0.18s; text-transform: uppercase; }
+.btn-red { background: var(--red); color: white; }
+.btn-red:hover { background: var(--red2); box-shadow: 0 0 14px rgba(204,0,0,0.5); transform: translateY(-1px); }
+.btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--red); color: var(--text); }
+.btn-teal { background: transparent; border: 1px solid var(--teal); color: var(--teal); }
+.btn-teal:hover { background: rgba(0,229,204,0.1); }
+
+/* PROGRESS BARS */
+.pbar-row { margin-bottom: 10px; }
+.pbar-labels { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px; }
+.pbar-labels span:last-child { color: var(--gold); font-family: 'Share Tech Mono', monospace; }
+.pbar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+.pbar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--red), var(--gold)); }
+
+/* NOTIFS */
+.notif { display: flex; gap: 12px; padding: 12px; border-left: 3px solid; border-radius: 0 8px 8px 0; background: rgba(255,255,255,0.02); margin-bottom: 9px; }
+.notif.red { border-color: var(--red2); }
+.notif.gold { border-color: var(--gold); }
+.notif.teal { border-color: var(--teal); }
+.notif-icon { font-size: 1.1rem; flex-shrink: 0; }
+.notif-text h4 { font-size: 0.87rem; font-weight: 700; margin-bottom: 2px; }
+.notif-text p { font-size: 0.77rem; color: var(--text2); }
+.notif-time { margin-left: auto; font-size: 0.62rem; color: var(--text2); font-family: 'Share Tech Mono', monospace; white-space: nowrap; }
+
+/* LEADERBOARD */
+.lb-row { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 7px; transition: all 0.18s; }
+.lb-row:hover { background: rgba(204,0,0,0.05); border-color: rgba(204,0,0,0.3); }
+.lb-row.me { background: rgba(204,0,0,0.1); border-color: var(--red); }
+.lb-rank { font-family: 'Creepster', cursive; font-size: 1.1rem; width: 26px; text-align: center; }
+.lb-name { flex: 1; font-weight: 600; font-size: 0.88rem; }
+.lb-streak { font-family: 'Share Tech Mono', monospace; font-size: 0.73rem; color: #ff8844; }
+.lb-stars { font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; color: var(--gold); }
+.gold-r { color: var(--gold2); text-shadow: 0 0 8px rgba(255,215,0,0.5); }
+.silver-r { color: #c0c0c0; }
+.bronze-r { color: #cd7f32; }
+
+/* POW */
+.pow-wrap { background: linear-gradient(135deg, rgba(245,166,35,0.1), rgba(204,0,0,0.05)); border: 1px solid rgba(245,166,35,0.3); border-radius: 12px; padding: 20px; text-align: center; }
+.pow-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--red), var(--purple)); display: flex; align-items: center; justify-content: center; font-family: 'Creepster', cursive; font-size: 2rem; color: white; margin: 0 auto 10px; border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(245,166,35,0.3); }
+.pow-name { font-family: 'Creepster', cursive; font-size: 1.4rem; color: var(--gold); }
+.pow-date { color: var(--text2); font-size: 0.78rem; margin-top: 2px; }
+.pow-desc { font-size: 0.8rem; color: var(--text2); margin-top: 8px; line-height: 1.5; }
+.pow-stats { display: flex; justify-content: center; gap: 24px; margin-top: 14px; }
+.pow-stat .pv { font-family: 'Creepster', cursive; font-size: 1.4rem; color: var(--gold); }
+.pow-stat .pl { font-size: 0.6rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+/* TALENTS */
+.talent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+.talent-card { background: rgba(107,47,160,0.08); border: 1px solid rgba(107,47,160,0.25); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; transition: all 0.22s; }
+.talent-card:hover { border-color: rgba(200,100,255,0.5); transform: translateY(-2px); box-shadow: 0 0 14px rgba(107,47,160,0.25); }
+.t-icon { font-size: 1.8rem; display: block; margin-bottom: 5px; }
+.t-name2 { font-size: 0.78rem; font-weight: 700; }
+.t-owner { font-size: 0.65rem; color: var(--text2); margin-top: 2px; }
+
+/* OPPORTUNITIES */
+.opp { padding: 13px; border: 1px solid; border-radius: 10px; margin-bottom: 9px; position: relative; overflow: hidden; }
+.opp::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.opp.hack { border-color: rgba(140,40,200,0.35); }
+.opp.hack::before { background: var(--purple2); }
+.opp.intern { border-color: rgba(0,220,200,0.3); }
+.opp.intern::before { background: var(--teal); }
+.opp.schol { border-color: rgba(245,166,35,0.3); }
+.opp.schol::before { background: var(--gold); }
+.opp-title { font-weight: 700; font-size: 0.88rem; }
+.opp-meta { font-size: 0.73rem; color: var(--text2); margin-top: 3px; display: flex; gap: 14px; }
+.opp-tag { font-size: 0.6rem; padding: 2px 7px; border-radius: 8px; font-family: 'Share Tech Mono', monospace; float: right; }
+.tag-open { background: rgba(0,229,204,0.12); color: var(--teal); }
+.tag-lock { background: rgba(255,255,255,0.05); color: #555; }
+
+/* WORK TRACKER */
+.wstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; margin-bottom: 16px; }
+.wstat { background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.06); border-radius: 9px; padding: 13px; text-align: center; }
+.ws-val { font-family: 'Creepster', cursive; font-size: 1.7rem; color: var(--gold); }
+.ws-lbl { font-size: 0.68rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+.att-grid { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 14px; }
+.att-d { width: 28px; height: 28px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 700; border: 1px solid; }
+.att-d.p { background: rgba(0,229,204,0.15); border-color: var(--teal); color: var(--teal); }
+.att-d.a { background: rgba(204,0,0,0.15); border-color: var(--red); color: var(--red2); }
+.att-d.s { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #444; }
+.att-d.today { box-shadow: 0 0 8px rgba(0,229,204,0.5); }
+
+/* GAMES */
+.game-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.game-card { background: rgba(16,4,4,0.88); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.25s; }
+.game-card:hover { border-color: var(--red2); box-shadow: 0 0 20px rgba(204,0,0,0.2); transform: translateY(-3px); }
+.game-card.sel { border-color: var(--teal); box-shadow: 0 0 18px rgba(0,229,204,0.25); }
+.g-icon { font-size: 2rem; display: block; margin-bottom: 7px; }
+.g-name { font-family: 'Creepster', cursive; font-size: 0.95rem; }
+.g-xp { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--gold); margin-top: 3px; }
+
+/* QUIZ */
+.quiz-box { background: rgba(10,2,2,0.8); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: none; }
+.quiz-prog { display: flex; gap: 5px; margin-bottom: 13px; }
+.qd { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+.qd.done { background: var(--gold); }
+.qd.cur { background: var(--red2); animation: nodePulse2 1s infinite; }
+@keyframes nodePulse2 { 0%,100%{opacity:1}50%{opacity:0.4} }
+.quiz-q { font-size: 0.95rem; font-weight: 600; margin-bottom: 14px; }
+.quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.qopt { padding: 11px 14px; border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; cursor: pointer; font-size: 0.82rem; background: rgba(255,255,255,0.02); transition: all 0.18s; text-align: left; color: var(--text); font-family: 'Rajdhani', sans-serif; }
+.qopt:hover { border-color: var(--red); background: rgba(204,0,0,0.07); }
+.qopt.correct { border-color: var(--teal); background: rgba(0,229,204,0.09); color: var(--teal); }
+.qopt.wrong { border-color: var(--red2); background: rgba(204,0,0,0.14); }
+.quiz-result { text-align: center; padding: 20px; display: none; }
+.quiz-result h3 { font-family: 'Creepster', cursive; font-size: 1.8rem; color: var(--gold); }
+
+/* MEMORY */
+.mem-box { display: none; }
+.mem-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 9px; max-width: 380px; margin: 0 auto; }
+.mc { aspect-ratio:1; border-radius: 8px; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; background: linear-gradient(145deg, #1a0505, #0e0202); border: 2px solid var(--border); transition: all 0.25s; user-select: none; }
+.mc.show { background: rgba(204,0,0,0.1); border-color: var(--red2); }
+.mc.matched { border-color: var(--teal); background: rgba(0,229,204,0.08); }
+.mc.hidden-c span { visibility: hidden; }
+.mc:hover.hidden-c { border-color: var(--red2); box-shadow: 0 0 10px rgba(204,0,0,0.3); }
+
+/* TAP */
+.tap-box { display: none; text-align: center; }
+.tap-score-big { font-family: 'Creepster', cursive; font-size: 3.5rem; color: var(--gold); text-shadow: 0 0 20px rgba(245,166,35,0.5); }
+.tap-timer2 { font-family: 'Share Tech Mono', monospace; font-size: 1rem; color: var(--text2); margin-bottom: 12px; }
+.tap-btn2 { width: 130px; height: 130px; border-radius: 50%; background: radial-gradient(circle at 38% 38%, #dd0000, #6b0000); margin: 0 auto 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Creepster', cursive; font-size: 1.2rem; color: white; box-shadow: 0 0 30px rgba(204,0,0,0.5); transition: transform 0.06s; user-select: none; }
+.tap-btn2:active { transform: scale(0.88); }
+
+/* MODAL */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 900; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+.modal-bg.open { display: flex; }
+.modal { background: linear-gradient(145deg, #0f0205, #08010e); border: 1px solid rgba(204,0,0,0.35); border-radius: 16px; padding: 26px; width: 440px; max-width: 94vw; position: relative; box-shadow: 0 0 60px rgba(204,0,0,0.2); animation: fadeIn 0.3s ease; }
+.modal h3 { font-family: 'Creepster', cursive; font-size: 1.4rem; color: var(--red2); margin-bottom: 14px; text-shadow: 0 0 18px rgba(204,0,0,0.5); }
+.modal-close { position: absolute; top: 14px; right: 16px; cursor: pointer; color: var(--text2); font-size: 1.1rem; }
+.m-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.m-block { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 10px 12px; }
+.m-block label { font-size: 0.6rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+.m-block p { font-size: 0.86rem; font-weight: 600; }
+
+/* TOAST */
+#toast { position: fixed; bottom: 28px; right: 26px; background: rgba(16,4,4,0.97); border: 1px solid var(--gold); border-radius: 10px; padding: 12px 18px; color: var(--gold); font-family: 'Share Tech Mono', monospace; font-size: 0.82rem; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); box-shadow: 0 0 20px rgba(245,166,35,0.25); max-width: 280px; }
+#toast.show { transform: translateY(0); opacity: 1; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(204,0,0,0.3); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="logo-block">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">
+      <h2>Study Streak<br>Cracker</h2>
+      <span>CAI-A (24–28)</span>
+    </div>
+  </div>
+
+  <div class="clock-block">
+    <div class="clock-date" id="clockDate">SAT, FEB 28</div>
+    <div class="clock-time" id="clockTime">12:54:16 PM</div>
+  </div>
+
+  <nav>
+    <div class="nav-item active" data-view="home" onclick="nav(this,'home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item" data-view="notes" onclick="nav(this,'notes')"><span class="nav-icon">📚</span><span>Class Notes</span><span class="nav-badge">+20XP</span></div>
+    <div class="nav-item" data-view="tracker" onclick="nav(this,'tracker')"><span class="nav-icon">📊</span><span>Work Tracker</span></div>
+    <div class="nav-item" data-view="tasks" onclick="nav(this,'tasks')"><span class="nav-icon">⚔️</span><span>Tasks</span><span class="nav-badge">3</span></div>
+    <div class="nav-item" data-view="notifs" onclick="nav(this,'notifs')"><span class="nav-icon">🔔</span><span>Notifications</span><span class="nav-badge">3</span></div>
+    <div class="nav-item" data-view="pow" onclick="nav(this,'pow')"><span class="nav-icon">🏆</span><span>Person of Week</span></div>
+    <div class="nav-item" data-view="talents" onclick="nav(this,'talents')"><span class="nav-icon">✨</span><span>Talents</span></div>
+    <div class="nav-item" data-view="opps" onclick="nav(this,'opps')"><span class="nav-icon">🔒</span><span>Opportunities</span></div>
+    <div class="nav-item" data-view="games" onclick="nav(this,'games')"><span class="nav-icon">🎮</span><span>Mini-Games</span></div>
+  </nav>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-title">
+      <span class="hero-deco">⚡</span>
+      Study Streak Cracker
+      <span class="hero-deco" style="animation-direction:reverse">⚡</span>
+    </div>
+    <div class="hero-sub">CAI-A (24–28) · Gamified Learning Platform</div>
+  </div>
+
+  <!-- RANK BAR -->
+  <div class="rank-bar">
+    <div class="rank-avatar">🌱<div class="rank-lv" id="lvLabel">LV1</div></div>
+    <div class="rank-info">
+      <div class="rank-name" id="rankName">Rookie Scholar</div>
+      <div class="rank-xp-bar"><div class="rank-xp-fill" id="xpFill"></div></div>
+      <div class="rank-xp-label" id="xpLabel">10/100 XP to next level</div>
+    </div>
+    <div class="stat-pills">
+      <div class="stat-pill pill-xp"><span class="sp-icon">⚡</span><span class="sp-val" id="spXP">10</span><span class="sp-label">Total XP</span></div>
+      <div class="stat-pill pill-star"><span class="sp-icon">⭐</span><span class="sp-val" id="spStars">1</span><span class="sp-label">Stars</span></div>
+      <div class="stat-pill pill-streak"><span class="sp-icon">🔥</span><span class="sp-val" id="spStreak">1</span><span class="sp-label">Day Streak</span></div>
+      <div class="stat-pill pill-level"><span class="sp-icon">🔮</span><span class="sp-val" id="spLevel">1</span><span class="sp-label">Level</span></div>
+    </div>
+  </div>
+
+  <!-- ALERT BAR -->
+  <div class="alert-bar" onclick="nav(document.querySelector('[data-view=notifs]'),'notifs')">
+    <div class="alert-dot"></div>
+    <span><strong>3 unread game alerts</strong> — check Notifications</span>
+    <span style="margin-left:auto;font-size:0.75rem;color:var(--text2)">→</span>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ── HOME / LEVEL MAP ── -->
+    <div class="view active" id="view-home">
+      <div class="map-section-title">
+        <div class="map-title">⭐ Level Map</div>
+        <div class="map-hint">Tap a level to enter · Play games for XP</div>
+      </div>
+
+      <div class="level-map-container" id="mapContainer">
+        <!-- SVG for dashed paths -->
+        <svg class="map-svg" id="mapSVG" viewBox="0 0 900 480" preserveAspectRatio="none"></svg>
+
+        <!-- Nodes layer -->
+        <div class="nodes-layer" id="nodesLayer"></div>
+      </div>
+    </div>
+
+    <!-- ── CLASS NOTES ── -->
+    <div class="view" id="view-notes">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📚 Daily Mission <span style="font-size:0.72rem;color:var(--gold);font-family:'Share Tech Mono',monospace">+20 XP</span></div>
+          <div class="tab-row">
+            <div class="tab active" onclick="setTab(this,'Math')">Math</div>
+            <div class="tab" onclick="setTab(this,'Physics')">Physics</div>
+            <div class="tab" onclick="setTab(this,'CS')">CS</div>
+            <div class="tab" onclick="setTab(this,'English')">English</div>
+            <div class="tab" onclick="setTab(this,'Chemistry')">Chem</div>
+          </div>
+          <textarea class="note-ta" id="noteTA" placeholder="Write your class notes here...&#10;Save to earn +20 XP!"></textarea>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+            <button class="btn btn-red" onclick="saveNote()">Save & Earn XP ⚡</button>
+            <span id="noteSaved" style="font-size:0.72rem;color:var(--teal);display:none;">✓ +20 XP earned!</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Saved Notes</div>
+          <div id="savedList" style="max-height:240px;overflow-y:auto;">
+            <div style="text-align:center;color:var(--text2);font-size:0.82rem;padding:20px;">No notes yet. Start writing!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── WORK TRACKER ── -->
+    <div class="view" id="view-tracker">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">📊 Record & Work Tracker</div>
+        <div class="wstats">
+          <div class="wstat"><div class="ws-val">92%</div><div class="ws-lbl">Attendance</div></div>
+          <div class="wstat"><div class="ws-val">87%</div><div class="ws-lbl">Avg Grade</div></div>
+          <div class="wstat"><div class="ws-val">14</div><div class="ws-lbl">Assignments</div></div>
+          <div class="wstat"><div class="ws-val">3</div><div class="ws-lbl">Pending</div></div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">February Attendance</div>
+        <div class="att-grid" id="attGrid"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📝 Assignments</div>
+          <div class="task-item done"><div class="task-check">✓</div><div class="t-name">DS Lab Report</div><div class="t-xp">+30 XP</div></div>
+          <div class="task-item done"><div class="task-check">✓</div><div class="t-name">Physics Problem Set #4</div><div class="t-xp">+30 XP</div></div>
+          <div class="task-item" onclick="toggleTask(this,30)"><div class="task-check"></div><div class="t-name">English Essay Draft</div><div class="t-xp">+30 XP</div></div>
+          <div class="task-item" onclick="toggleTask(this,30)"><div class="task-check"></div><div class="t-name">Math Integration Sheet</div><div class="t-xp">+30 XP</div></div>
+          <div class="task-item" onclick="toggleTask(this,30)"><div class="task-check"></div><div class="t-name">Chemistry Pre-report</div><div class="t-xp">+30 XP</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 Grade Tracker</div>
+          <div class="pbar-row"><div class="pbar-labels"><span>Mathematics</span><span>92</span></div><div class="pbar"><div class="pbar-fill" style="width:92%"></div></div></div>
+          <div class="pbar-row"><div class="pbar-labels"><span>Physics</span><span>85</span></div><div class="pbar"><div class="pbar-fill" style="width:85%"></div></div></div>
+          <div class="pbar-row"><div class="pbar-labels"><span>Computer Science</span><span>97</span></div><div class="pbar"><div class="pbar-fill" style="width:97%;background:linear-gradient(90deg,var(--teal),var(--gold))"></div></div></div>
+          <div class="pbar-row"><div class="pbar-labels"><span>English</span><span>78</span></div><div class="pbar"><div class="pbar-fill" style="width:78%;background:linear-gradient(90deg,var(--purple),var(--red))"></div></div></div>
+          <div class="pbar-row"><div class="pbar-labels"><span>Chemistry</span><span>82</span></div><div class="pbar"><div class="pbar-fill" style="width:82%"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TASKS ── -->
+    <div class="view" id="view-tasks">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">⚔️ Weekly Quests</div>
+          <div id="questList">
+            <div class="task-item" onclick="toggleTask(this,30)"><div class="task-check"></div><div class="t-name">Complete 5 note sessions</div><div class="t-xp">+30 XP</div></div>
+            <div class="task-item" onclick="toggleTask(this,50)"><div class="task-check"></div><div class="t-name">Win a quiz mini-game</div><div class="t-xp">+50 XP</div></div>
+            <div class="task-item" onclick="toggleTask(this,40)"><div class="task-check"></div><div class="t-name">Maintain 5-day streak</div><div class="t-xp">+40 XP</div></div>
+            <div class="task-item" onclick="toggleTask(this,20)"><div class="task-check"></div><div class="t-name">Solve 10 math problems</div><div class="t-xp">+20 XP</div></div>
+            <div class="task-item" onclick="toggleTask(this,35)"><div class="task-check"></div><div class="t-name">Submit all assignments</div><div class="t-xp">+35 XP</div></div>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="addTask()">+ Add Custom Quest</button>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Daily Goals</div>
+          <div class="task-item done"><div class="task-check">✓</div><div class="t-name">Log in today</div><div class="t-xp">+10 XP</div></div>
+          <div class="task-item done"><div class="task-check">✓</div><div class="t-name">Add at least one note</div><div class="t-xp">+20 XP</div></div>
+          <div class="task-item" onclick="toggleTask(this,15)"><div class="task-check"></div><div class="t-name">Play one mini-game</div><div class="t-xp">+15 XP</div></div>
+          <div class="task-item" onclick="toggleTask(this,5)"><div class="task-check"></div><div class="t-name">Check notifications</div><div class="t-xp">+5 XP</div></div>
+          <div class="task-item" onclick="toggleTask(this,10)"><div class="task-check"></div><div class="t-name">Review yesterday's notes</div><div class="t-xp">+10 XP</div></div>
+          <div style="margin-top:14px;padding:12px;background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:9px;">
+            <div style="font-size:0.72rem;color:var(--gold);font-weight:700;margin-bottom:4px;">Today's Stars</div>
+            <div style="font-family:'Creepster',cursive;font-size:1.8rem;color:var(--gold);">⭐ <span id="dailyStars">2</span> / 5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NOTIFICATIONS ── -->
+    <div class="view" id="view-notifs">
+      <div class="card">
+        <div class="card-title">🔔 Game Alerts</div>
+        <div class="notif red"><span class="notif-icon">⚠️</span><div class="notif-text"><h4>Assignment Deadline!</h4><p>Math Integration due tomorrow. Complete for +30 XP!</p></div><div class="notif-time">2h ago</div></div>
+        <div class="notif gold"><span class="notif-icon">⭐</span><div class="notif-text"><h4>7-Day Streak Bonus!</h4><p>You maintained 7 consecutive days. +10 Bonus Stars!</p></div><div class="notif-time">Today</div></div>
+        <div class="notif teal"><span class="notif-icon">🏆</span><div class="notif-text"><h4>Leaderboard Update</h4><p>You're ranked #3! 42 more XP to overtake #1.</p></div><div class="notif-time">1h ago</div></div>
+        <div class="notif teal"><span class="notif-icon">🎮</span><div class="notif-text"><h4>New Mini-Game Unlocked!</h4><p>Fast Tap is now available. Earn up to 30 XP/session.</p></div><div class="notif-time">Yesterday</div></div>
+        <div class="notif red"><span class="notif-icon">📚</span><div class="notif-text"><h4>Notes Reminder</h4><p>Chemistry notes missing today. Add now to keep streak!</p></div><div class="notif-time">3h ago</div></div>
+        <div class="notif gold"><span class="notif-icon">🔓</span><div class="notif-text"><h4>New Opportunity Unlocked!</h4><p>Google Summer of Code 2026 applications open.</p></div><div class="notif-time">2d ago</div></div>
+      </div>
+    </div>
+
+    <!-- ── PERSON OF WEEK ── -->
+    <div class="view" id="view-pow">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🏆 Leaderboard</div>
+          <div class="lb-row"><div class="lb-rank gold-r">1</div><div class="lb-name">Sarah Johnson</div><div class="lb-streak">🔥 14</div><div class="lb-stars">⭐ 89</div></div>
+          <div class="lb-row"><div class="lb-rank silver-r">2</div><div class="lb-name">Arjun Mehta</div><div class="lb-streak">🔥 11</div><div class="lb-stars">⭐ 76</div></div>
+          <div class="lb-row me"><div class="lb-rank bronze-r">3</div><div class="lb-name">Chandrika R. (You)</div><div class="lb-streak">🔥 7</div><div class="lb-stars">⭐ 47</div></div>
+          <div class="lb-row"><div class="lb-rank" style="color:var(--text2)">4</div><div class="lb-name">Priya Sharma</div><div class="lb-streak">🔥 5</div><div class="lb-stars">⭐ 41</div></div>
+          <div class="lb-row"><div class="lb-rank" style="color:var(--text2)">5</div><div class="lb-name">Rohit Dev</div><div class="lb-streak">🔥 3</div><div class="lb-stars">⭐ 35</div></div>
+          <div class="lb-row"><div class="lb-rank" style="color:var(--text2)">6</div><div class="lb-name">Anika Reddy</div><div class="lb-streak">🔥 6</div><div class="lb-stars">⭐ 32</div></div>
+          <div style="margin-top:14px;padding:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:9px;font-size:0.8rem;color:var(--text2);line-height:1.8;">
+            <strong style="color:var(--text)">How it's calculated:</strong><br>
+            ⭐ Stars × 1pt &nbsp; 🔥 Streak × 2pt &nbsp; ⚡ XP × 0.5pt<br>
+            <span style="color:var(--text)">→ Highest weekly score wins 🏆</span>
+          </div>
+        </div>
+        <div>
+          <div class="card pow-wrap">
+            <div style="font-size:2rem;animation:nodePulse2 1.5s infinite">🏆</div>
+            <div class="pow-avatar">S</div>
+            <div class="pow-name">Sarah Johnson</div>
+            <div class="pow-date">Week of Feb 17–23, 2026</div>
+            <div class="pow-desc">Won first place in the National Coding Competition and mentored 3 junior students this week.</div>
+            <div class="pow-stats">
+              <div class="pow-stat"><div class="pv">89</div><div class="pl">Stars</div></div>
+              <div class="pow-stat"><div class="pv" style="color:var(--red2)">14</div><div class="pl">Streak</div></div>
+              <div class="pow-stat"><div class="pv" style="color:var(--teal)">1240</div><div class="pl">XP</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TALENTS ── -->
+    <div class="view" id="view-talents">
+      <div class="card">
+        <div class="card-title">✨ Talent Showcase <span style="font-size:0.68rem;padding:2px 8px;border-radius:10px;background:rgba(107,47,160,0.2);color:var(--purple2);border:1px solid rgba(107,47,160,0.4);font-family:'Share Tech Mono',monospace">Achievement Zone</span></div>
+        <div class="talent-grid">
+          <div class="talent-card"><span class="t-icon">💻</span><div class="t-name2">Hackathon Winner</div><div class="t-owner">Sarah Johnson</div></div>
+          <div class="talent-card"><span class="t-icon">🎨</span><div class="t-name2">UI/UX Design</div><div class="t-owner">Priya Sharma</div></div>
+          <div class="talent-card"><span class="t-icon">🎵</span><div class="t-name2">Music Composer</div><div class="t-owner">Rohit Dev</div></div>
+          <div class="talent-card"><span class="t-icon">🧮</span><div class="t-name2">Math Olympiad</div><div class="t-owner">Arjun Mehta</div></div>
+          <div class="talent-card"><span class="t-icon">📖</span><div class="t-name2">Creative Writing</div><div class="t-owner">Chandrika R.</div></div>
+          <div class="talent-card"><span class="t-icon">🤖</span><div class="t-name2">ML Research</div><div class="t-owner">Vignesh Kumar</div></div>
+          <div class="talent-card"><span class="t-icon">🌐</span><div class="t-name2">Web Dev</div><div class="t-owner">Anika Reddy</div></div>
+          <div class="talent-card"><span class="t-icon">📸</span><div class="t-name2">Photography</div><div class="t-owner">Sneha Rao</div></div>
+          <div class="talent-card" style="border-style:dashed" onclick="toast('🌟 Submit your talent coming soon!')"><span class="t-icon">➕</span><div class="t-name2">Add Yours</div><div class="t-owner">Share talent</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OPPORTUNITIES ── -->
+    <div class="view" id="view-opps">
+      <div class="grid-2">
+        <div>
+          <div class="card" style="margin-bottom:14px"><div class="card-title">🏆 Hackathons</div>
+            <div class="opp hack"><div style="display:flex;justify-content:space-between"><div class="opp-title">Smart India Hackathon 2026</div><span class="opp-tag tag-open">OPEN</span></div><div class="opp-meta"><span>📅 Mar 15</span><span>💰 ₹1L Prize</span></div></div>
+            <div class="opp hack"><div style="display:flex;justify-content:space-between"><div class="opp-title">HackWithInfy 2026</div><span class="opp-tag tag-open">OPEN</span></div><div class="opp-meta"><span>📅 Mar 5</span><span>💰 Job + Cash</span></div></div>
+          </div>
+          <div class="card"><div class="card-title">💼 Internships</div>
+            <div class="opp intern"><div style="display:flex;justify-content:space-between"><div class="opp-title">Google Summer of Code 2026</div><span class="opp-tag tag-open">OPEN</span></div><div class="opp-meta"><span>📅 Apr 2</span><span>💰 $3000</span></div></div>
+            <div class="opp intern"><div style="display:flex;justify-content:space-between"><div class="opp-title">Microsoft Internship – India</div><span class="opp-tag tag-lock">🔒 Lvl 6</span></div><div class="opp-meta"><span>📅 Rolling</span><span>💰 Paid</span></div></div>
+          </div>
+        </div>
+        <div class="card"><div class="card-title">🎓 Scholarships</div>
+          <div class="opp schol"><div style="display:flex;justify-content:space-between"><div class="opp-title">AICTE Pragati Scholarship</div><span class="opp-tag tag-open">OPEN</span></div><div class="opp-meta"><span>📅 Mar 20</span><span>💰 ₹30,000/yr</span></div></div>
+          <div class="opp schol"><div style="display:flex;justify-content:space-between"><div class="opp-title">Google Generation Scholarship</div><span class="opp-tag tag-open">OPEN</span></div><div class="opp-meta"><span>📅 Apr 1</span><span>💰 $10,000</span></div></div>
+          <div class="opp schol"><div style="display:flex;justify-content:space-between"><div class="opp-title">Tata STEM Scholarship</div><span class="opp-tag tag-lock">🔒 Lvl 7</span></div><div class="opp-meta"><span>📅 May</span><span>💰 Full Tuition</span></div></div>
+          <div class="opp schol"><div style="display:flex;justify-content:space-between"><div class="opp-title">Govt Job Alerts (PSU)</div><span class="opp-tag tag-open">OPEN</span></div><div class="opp-meta"><span>📅 Rolling</span><span>💰 Govt Sector</span></div></div>
+          <div class="opp schol"><div style="display:flex;justify-content:space-between"><div class="opp-title">Amazon ML Summer School</div><span class="opp-tag tag-lock">🔒 Lvl 8</span></div><div class="opp-meta"><span>📅 Jun</span><span>💰 Cert + Stipend</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MINI GAMES ── -->
+    <div class="view" id="view-games">
+      <div style="font-family:'Creepster',cursive;font-size:1.2rem;margin-bottom:14px;color:var(--text);">🎮 Mini-Game Arena</div>
+      <div class="game-pick">
+        <div class="game-card" onclick="pickGame('quiz',this)"><span class="g-icon">🧠</span><div class="g-name">Quiz Blitz</div><div class="g-xp">+10–50 XP</div></div>
+        <div class="game-card" onclick="pickGame('memory',this)"><span class="g-icon">🃏</span><div class="g-name">Memory Match</div><div class="g-xp">+15–40 XP</div></div>
+        <div class="game-card" onclick="pickGame('tap',this)"><span class="g-icon">👆</span><div class="g-name">Fast Tap</div><div class="g-xp">+5–30 XP</div></div>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="quiz-box" id="quizBox">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-family:'Creepster',cursive;font-size:1.05rem">🧠 Quiz Blitz</div>
+          <button class="btn btn-ghost" style="padding:4px 10px;font-size:0.72rem" onclick="closeGame()">← Back</button>
+        </div>
+        <div class="quiz-prog" id="quizProg"></div>
+        <div class="quiz-q" id="quizQ"></div>
+        <div class="quiz-opts" id="quizOpts"></div>
+        <div class="quiz-result" id="quizResult">
+          <h3 id="quizScore"></h3>
+          <p id="quizMsg" style="color:var(--text2);margin-top:6px"></p>
+          <button class="btn btn-red" style="margin-top:14px" onclick="startQuiz()">Play Again</button>
+        </div>
+      </div>
+
+      <!-- MEMORY -->
+      <div class="mem-box" id="memBox">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div style="font-family:'Creepster',cursive;font-size:1.05rem">🃏 Memory Match <span id="memPairs" style="font-size:0.72rem;color:var(--gold);font-family:'Share Tech Mono',monospace"></span></div>
+          <button class="btn btn-ghost" style="padding:4px 10px;font-size:0.72rem" onclick="closeGame()">← Back</button>
+        </div>
+        <div class="mem-grid" id="memGrid"></div>
+        <div id="memWin" style="text-align:center;display:none;margin-top:16px">
+          <div style="font-family:'Creepster',cursive;font-size:1.6rem;color:var(--gold)">🎉 Cleared! +25 XP</div>
+          <button class="btn btn-red" style="margin-top:10px" onclick="startMemory()">Play Again</button>
+        </div>
+      </div>
+
+      <!-- TAP -->
+      <div class="tap-box" id="tapBox">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div style="font-family:'Creepster',cursive;font-size:1.05rem">👆 Fast Tap</div>
+          <button class="btn btn-ghost" style="padding:4px 10px;font-size:0.72rem" onclick="closeGame()">← Back</button>
+        </div>
+        <div class="tap-score-big" id="tapSc">0</div>
+        <div class="tap-timer2" id="tapTm">Press START</div>
+        <div class="tap-btn2" id="tapBtn" onclick="tapHit()">TAP!</div>
+        <button class="btn btn-red" id="tapStart" onclick="startTap()" style="display:block;margin:0 auto">START GAME</button>
+        <div id="tapRes" style="display:none;margin-top:12px;font-family:'Creepster',cursive;font-size:1.1rem;color:var(--gold);text-align:center"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <span class="modal-close" onclick="closeModal()">✕</span>
+    <h3 id="mTitle"></h3>
+    <div class="m-info" id="mInfo"></div>
+    <div id="mAction"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">🎉 Achievement!</div>
+
+<script>
+/* ═════════════ STATE ═════════════ */
+let XP=10, STARS=1, STREAK=1, LEVEL=1;
+const rankNames=['Rookie Scholar','Rising Star','Quest Master','Skill Seeker','Knowledge Knight','Sage Warrior','Academic Hero','Legendary Scholar'];
+const rankIcons=['🌱','⭐','⚔️','🔍','🛡️','🌀','🦅','👑'];
+
+function addXP(n){
+  XP+=n;
+  const cap=LEVEL*100;
+  if(XP>=cap){ LEVEL++; XP-=cap; toast('🚀 Level Up! You are now Level '+LEVEL); }
+  updateStats();
+}
+function addStar(n){ STARS+=n; document.getElementById('dailyStars').textContent=Math.min(5,parseInt(document.getElementById('dailyStars').textContent)+n); updateStats(); }
+function updateStats(){
+  const cap=LEVEL*100;
+  document.getElementById('spXP').textContent=XP;
+  document.getElementById('spStars').textContent=STARS;
+  document.getElementById('spStreak').textContent=STREAK;
+  document.getElementById('spLevel').textContent=LEVEL;
+  document.getElementById('lvLabel').textContent='LV'+LEVEL;
+  document.getElementById('rankName').textContent=rankNames[Math.min(LEVEL-1,7)];
+  document.getElementById('xpLabel').textContent=XP+'/'+cap+' XP to next level';
+  document.getElementById('xpFill').style.width=(XP/cap*100)+'%';
+}
+
+/* ═════════════ CLOCK ═════════════ */
+function updateClock(){
+  const now=new Date();
+  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('clockDate').textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate();
+  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  const ap=h>=12?'PM':'AM'; h=h%12||12;
+  document.getElementById('clockTime').textContent=[h,String(m).padStart(2,'0'),String(s).padStart(2,'0')].join(':')+'  '+ap;
+}
+setInterval(updateClock,1000); updateClock();
+
+/* ═════════════ NAVIGATION ═════════════ */
+function nav(el, view){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-'+view).classList.add('active');
+}
+
+/* ═════════════ ATTENDANCE ═════════════ */
+(function buildAtt(){
+  const grid=document.getElementById('attGrid');
+  const data={1:'p',4:'p',5:'p',6:'a',7:'p',8:'p',11:'p',12:'p',13:'p',14:'p',15:'p',18:'a',19:'p',20:'p',21:'p',22:'p',28:'p'};
+  for(let d=1;d<=28;d++){
+    const el=document.createElement('div');
+    el.className='att-d '+(data[d]||'s')+(d===28?' today':'');
+    el.textContent=data[d]?d:'—';
+    grid.appendChild(el);
+  }
+})();
+
+/* ═════════════ NOTES ═════════════ */
+let curTab='Math', notes={};
+function setTab(el,sub){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active'); curTab=sub;
+  document.getElementById('noteTA').value=notes[sub]||'';
+  document.getElementById('noteSaved').style.display='none';
+}
+function saveNote(){
+  const txt=document.getElementById('noteTA').value.trim();
+  if(!txt){toast('📝 Write something first!');return;}
+  notes[curTab]=txt;
+  document.getElementById('noteSaved').style.display='inline';
+  addXP(20); addStar(1); toast('📚 Notes saved! +20 XP ⭐ +1 Star');
+  renderNotes();
+  setTimeout(()=>document.getElementById('noteSaved').style.display='none',2500);
+}
+function renderNotes(){
+  const el=document.getElementById('savedList');
+  const keys=Object.keys(notes);
+  if(!keys.length)return;
+  el.innerHTML=keys.map(k=>`<div style="padding:9px;border:1px solid rgba(255,255,255,0.06);border-radius:7px;margin-bottom:7px"><div style="font-size:0.65rem;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">${k}</div><div style="font-size:0.8rem;color:var(--text2)">${notes[k].substring(0,80)}${notes[k].length>80?'...':''}</div></div>`).join('');
+}
+
+/* ═════════════ TASKS ═════════════ */
+function toggleTask(el,xpVal){
+  const done=!el.classList.contains('done');
+  el.classList.toggle('done');
+  el.querySelector('.task-check').textContent=done?'✓':'';
+  if(done){addXP(xpVal);addStar(1);toast('⚔️ Task complete! +'+xpVal+' XP');}
+}
+function addTask(){
+  const name=prompt('Enter your custom quest:');
+  if(!name)return;
+  const list=document.getElementById('questList');
+  const d=document.createElement('div');
+  d.className='task-item';
+  d.onclick=function(){toggleTask(this,20);};
+  d.innerHTML=`<div class="task-check"></div><div class="t-name">${name}</div><div class="t-xp">+20 XP</div>`;
+  list.appendChild(d); toast('✅ Quest added!');
+}
+
+/* ═════════════ LEVEL MAP ═════════════ */
+const levelDefs=[
+  {id:1,x:18,y:18,emoji:'📚',label:'Class Notes',xpStr:'+20 XP',badge:'mission',state:'completed',view:'notes'},
+  {id:2,x:50,y:38,emoji:'📋',label:'Work Tracker',xpStr:'+20 XP',badge:'mission',state:'completed',view:'tracker'},
+  {id:3,x:82,y:18,emoji:'⚔️',label:'Weekly Tasks',xpStr:'+30 XP',badge:'quest',state:'active',view:'tasks'},
+  {id:4,x:82,y:55,emoji:'🔔',label:'Notifications',xpStr:'+10 XP',badge:'alert',state:'locked',nodeClass:'pink-node',view:'notifs'},
+  {id:5,x:55,y:65,emoji:'✨',label:'Talent Showcase',xpStr:'+25 XP',badge:'achievement',state:'locked',nodeClass:'purple-node',view:'talents'},
+  {id:6,x:28,y:65,emoji:'🔓',label:'Opportunities',xpStr:'+40 XP',badge:'reward',state:'locked',view:'opps'},
+  {id:7,x:28,y:85,emoji:'🏛️',label:'Govt Jobs',xpStr:'+35 XP',badge:'reward',state:'locked',nodeClass:'teal-node',view:'opps'},
+  {id:8,x:55,y:85,emoji:'🏆',label:'Person of Week',xpStr:'Hall of Fame',badge:'final',state:'locked',nodeClass:'purple-node',view:'pow'},
+];
+
+// Draw SVG paths
+const paths=[
+  [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]
+];
+
+function buildMap(){
+  const svg=document.getElementById('mapSVG');
+  const layer=document.getElementById('nodesLayer');
+  const W=900,H=480;
+
+  paths.forEach(([a,b])=>{
+    const A=levelDefs[a], B=levelDefs[b];
+    const x1=A.x/100*W, y1=A.y/100*H, x2=B.x/100*W, y2=B.y/100*H;
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    // Curve control
+    const cx=mx+(y2-y1)*0.3, cy=my-(x2-x1)*0.15;
+    const done=A.state==='completed'&&B.state!=='locked';
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M${x1},${y1} Q${cx},${cy} ${x2},${y2}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke', done?'rgba(245,166,35,0.5)':'rgba(180,0,0,0.3)');
+    path.setAttribute('stroke-width','2.5');
+    path.setAttribute('stroke-dasharray','10,8');
+    path.setAttribute('stroke-linecap','round');
+    if(done){path.setAttribute('filter','drop-shadow(0 0 4px rgba(245,166,35,0.4))');}
+    svg.appendChild(path);
+  });
+
+  levelDefs.forEach(d=>{
+    const nd=document.createElement('div');
+    nd.className='lv-node';
+    nd.style.left=d.x+'%';
+    nd.style.top=d.y+'%';
+
+    let bubClass='lv-bubble '+d.state;
+    if(d.nodeClass&&d.state==='locked') bubClass='lv-bubble '+d.nodeClass;
+    if(d.nodeClass&&d.state!=='locked') bubClass='lv-bubble '+d.nodeClass;
+
+    const badgeClass='lv-badge badge-'+(d.badge||'mission');
+
+    nd.innerHTML=`
+      <div class="${badgeClass}">${d.badge.toUpperCase()}</div>
+      <div class="${bubClass}" onclick="openLevel(${d.id})">
+        <span>${d.emoji}</span>
+        <span class="lv-num">LV${d.id}</span>
+      </div>
+      <div class="lv-label">${d.label}</div>
+      <div class="lv-xp">${d.xpStr}</div>`;
+    layer.appendChild(nd);
+  });
+}
+
+buildMap();
+
+/* ═════════════ LEVEL MODAL ═════════════ */
+function openLevel(id){
+  const d=levelDefs.find(l=>l.id===id);
+  document.getElementById('mTitle').textContent='Level '+id+': '+d.label;
+  document.getElementById('mInfo').innerHTML=`
+    <div class="m-block"><label>Type</label><p>${d.badge.charAt(0).toUpperCase()+d.badge.slice(1)}</p></div>
+    <div class="m-block"><label>Reward</label><p style="color:var(--gold)">${d.xpStr}</p></div>
+    <div class="m-block" style="grid-column:1/-1"><label>Status</label><p style="color:${d.state==='completed'?'var(--teal)':d.state==='active'?'var(--red2)':'#555'}">${d.state==='completed'?'✓ Completed':d.state==='active'?'▶ In Progress':'🔒 Locked'}</p></div>`;
+  const btn=d.state==='locked'
+    ?`<div style="text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:8px;color:#555;font-size:0.82rem;">🔒 Complete previous levels to unlock</div>`
+    :`<button class="btn btn-red" style="width:100%" onclick="closeModal();nav(document.querySelector('[data-view=${d.view}]'),'${d.view}')">▶ Enter Level</button>`;
+  document.getElementById('mAction').innerHTML=btn;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+
+/* ═════════════ MINI GAMES ═════════════ */
+let activeGame=null;
+function pickGame(g,el){
+  document.querySelectorAll('.game-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('quizBox').style.display='none';
+  document.getElementById('memBox').style.display='none';
+  document.getElementById('tapBox').style.display='none';
+  activeGame=g;
+  if(g==='quiz'){document.getElementById('quizBox').style.display='block';startQuiz();}
+  else if(g==='memory'){document.getElementById('memBox').style.display='block';startMemory();}
+  else{document.getElementById('tapBox').style.display='block';}
+}
+function closeGame(){
+  document.querySelectorAll('.game-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('quizBox').style.display='none';
+  document.getElementById('memBox').style.display='none';
+  document.getElementById('tapBox').style.display='none';
+  if(tapInterval){clearInterval(tapInterval);tapInterval=null;}
+  tapRunning=false; activeGame=null;
+}
+
+/* QUIZ */
+const Qs=[
+  {q:'What does CPU stand for?',opts:['Central Processing Unit','Core Power Unit','Central Power Unit','Compact Processing Unit'],ans:0},
+  {q:'Which planet is closest to the Sun?',opts:['Venus','Mars','Mercury','Earth'],ans:2},
+  {q:'Chemical symbol for water?',opts:['H₂O','CO₂','NaCl','O₂'],ans:0},
+  {q:'What is 17 × 6?',opts:['96','100','102','112'],ans:2},
+  {q:'Who invented the telephone?',opts:['Edison','Bell','Tesla','Marconi'],ans:1},
+];
+let qi=0,qs2=0;
+function startQuiz(){qi=0;qs2=0;document.getElementById('quizResult').style.display='none';document.getElementById('quizQ').style.display='block';document.getElementById('quizOpts').style.display='grid';renderQ();}
+function renderQ(){
+  if(qi>=Qs.length){endQ();return;}
+  const q=Qs[qi];
+  document.getElementById('quizProg').innerHTML=Qs.map((_,i)=>`<div class="qd ${i<qi?'done':i===qi?'cur':''}"></div>`).join('');
+  document.getElementById('quizQ').textContent=`Q${qi+1}: ${q.q}`;
+  document.getElementById('quizOpts').innerHTML=q.opts.map((o,i)=>`<button class="qopt" onclick="ansQ(${i},${q.ans},this)">${o}</button>`).join('');
+}
+function ansQ(c,a,el){
+  document.querySelectorAll('.qopt').forEach(o=>{o.onclick=null;});
+  if(c===a){el.classList.add('correct');qs2++;}
+  else{el.classList.add('wrong');document.querySelectorAll('.qopt')[a].classList.add('correct');}
+  setTimeout(()=>{qi++;renderQ();},850);
+}
+function endQ(){
+  document.getElementById('quizQ').style.display='none';
+  document.getElementById('quizOpts').style.display='none';
+  document.getElementById('quizResult').style.display='block';
+  const e=qs2*10;
+  document.getElementById('quizScore').textContent=`${qs2}/${Qs.length} — +${e} XP!`;
+  document.getElementById('quizMsg').textContent=qs2>=4?'🔥 Excellent!':qs2>=2?'👍 Good effort!':'💪 Keep trying!';
+  addXP(e); if(qs2>=4)addStar(2);
+  toast(`🧠 Quiz done! +${e} XP`);
+}
+
+/* MEMORY */
+const emjs=['🔥','⚡','🧠','🎮','📚','🏆','🎯','✨'];
+let mf=[],mm=0,ml=false;
+function startMemory(){
+  mf=[];mm=0;ml=false;
+  document.getElementById('memWin').style.display='none';
+  document.getElementById('memPairs').textContent='';
+  const cards=[...emjs,...emjs].sort(()=>Math.random()-0.5);
+  document.getElementById('memGrid').innerHTML=cards.map((e,i)=>`<div class="mc hidden-c" data-e="${e}" onclick="flipMem(this)"><span>${e}</span></div>`).join('');
+}
+function flipMem(el){
+  if(ml||mf.length>=2||!el.classList.contains('hidden-c')||el.classList.contains('matched'))return;
+  el.classList.remove('hidden-c');el.classList.add('show');
+  mf.push(el);
+  if(mf.length===2){
+    ml=true;
+    setTimeout(()=>{
+      if(mf[0].dataset.e===mf[1].dataset.e){
+        mf[0].classList.add('matched');mf[1].classList.add('matched');mm++;
+        document.getElementById('memPairs').textContent=`${mm}/8`;
+        if(mm===8){document.getElementById('memWin').style.display='block';addXP(25);addStar(2);toast('🃏 Memory cleared! +25 XP');}
+      } else {
+        mf[0].classList.remove('show');mf[0].classList.add('hidden-c');
+        mf[1].classList.remove('show');mf[1].classList.add('hidden-c');
+      }
+      mf=[];ml=false;
+    },650);
+  }
+}
+
+/* TAP */
+let tapRunning=false,tapN=0,tapSecs=10,tapInterval=null;
+function startTap(){
+  tapN=0;tapSecs=10;tapRunning=true;
+  document.getElementById('tapStart').style.display='none';
+  document.getElementById('tapRes').style.display='none';
+  document.getElementById('tapSc').textContent='0';
+  document.getElementById('tapTm').textContent='⏱ 10s';
+  tapInterval=setInterval(()=>{
+    tapSecs--;
+    document.getElementById('tapTm').textContent='⏱ '+tapSecs+'s';
+    if(tapSecs<=0){
+      clearInterval(tapInterval);tapInterval=null;tapRunning=false;
+      const e=Math.min(30,Math.floor(tapN/3));
+      document.getElementById('tapRes').style.display='block';
+      document.getElementById('tapRes').textContent=`🎯 ${tapN} taps! +${e} XP`;
+      document.getElementById('tapStart').textContent='PLAY AGAIN';
+      document.getElementById('tapStart').style.display='block';
+      addXP(e);if(tapN>=30)addStar(1);
+      toast(`👆 ${tapN} taps! +${e} XP`);
+    }
+  },1000);
+}
+function tapHit(){
+  if(!tapRunning)return;
+  tapN++;
+  document.getElementById('tapSc').textContent=tapN;
+  const b=document.getElementById('tapBtn');
+  b.style.transform=`scale(0.84) rotate(${(Math.random()-0.5)*8}deg)`;
+  setTimeout(()=>b.style.transform='',90);
+}
+document.addEventListener('keydown',e=>{if(e.key===' '&&tapRunning){tapHit();e.preventDefault();}});
+
+/* TOAST */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* INIT */
+updateStats();
+</script>
+</body>
+</html>
