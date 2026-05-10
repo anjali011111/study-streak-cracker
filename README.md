@@ -3,6 +3,7 @@
 > **A gamified learning platform for CAI-A (Batch 24–28)**  
 > Turn your study grind into an RPG — earn XP, level up, and crack the streak!
 
+  deployed link: https://anjali011111.github.io/study-streak-cracker/
 ---
 
 ## 📸 Overview
